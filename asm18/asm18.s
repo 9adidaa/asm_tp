@@ -21,7 +21,7 @@ section .data
 section .bss
     sock    resq 1
     buf     resb 512
-    pfd     resb 8          ; struct pollfd
+    pfd     resb 8
 
 section .text
 _start:
@@ -45,13 +45,13 @@ _start:
 
     mov eax, [sock]
     mov dword [pfd], eax
-    mov word  [pfd+4], 1    ; POLLIN
+    mov word  [pfd+4], 1
     mov word  [pfd+6], 0
 
     mov eax, 7
     lea rdi, [rel pfd]
     mov esi, 1
-    mov edx, 5000
+    mov edx, 2000
     syscall
     test eax, eax
     jle timeout
@@ -89,7 +89,9 @@ _start:
     mov edx, quote_len
     syscall
 
-    jmp exit_ok
+    mov eax, 60
+    xor edi, edi
+    syscall
 
 timeout:
     mov eax, 1
@@ -97,10 +99,8 @@ timeout:
     lea rsi, [rel timeout_msg]
     mov edx, timeout_len
     syscall
-
-exit_ok:
     mov eax, 60
-    xor edi, edi
+    mov edi, 1
     syscall
 
 exit_fail:
