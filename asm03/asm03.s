@@ -1,6 +1,3 @@
-section .bss
-    buf resb 128
-
 section .data
     match db "1337", 10
     match_len equ $ - match
@@ -9,43 +6,31 @@ section .text
 global _start
 
 _start:
-    mov rbx, rsp
-    mov rcx, [rbx]        
+    mov rcx, [rsp]
     cmp rcx, 2
-    jne exit
+    jne bad
 
-    mov rsi, [rbx + 16]   
-    mov rdi, buf
+    mov rsi, [rsp+16]
 
-copy_loop:
-    mov al, [rsi]
-    mov [rdi], al
-    inc rsi
-    inc rdi
-    test al, al
-    jne copy_loop
+    cmp byte [rsi], '4'
+    jne bad
+    cmp byte [rsi+1], '2'
+    jne bad
+    cmp byte [rsi+2], 0
+    jne bad
 
-    ; check "42"
-    cmp byte [buf], '4'
-    jne .no_match
-    cmp byte [buf+1], '2'
-    jne .no_match
-    cmp byte [buf+2], 0
-    jne .no_match
-
-    ; print match
-    mov rax, 1
-    mov rdi, 1
+    mov eax, 1
+    mov edi, 1
     mov rsi, match
-    mov rdx, match_len
+    mov edx, match_len
     syscall
 
-    xor rdi, rdi
+    xor edi, edi
     jmp exit
 
-.no_match:
-    mov rdi, 1
+bad:
+    mov edi, 1
 
 exit:
-    mov rax, 60
+    mov eax, 60
     syscall
