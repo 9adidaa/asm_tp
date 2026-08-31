@@ -1,0 +1,9 @@
+services:
+  rat-server:
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./downloads:/app/downloads
+    stdin_open: true   # ← garde stdin ouvert
+    tty: true          # ← alloue un pseudo-TTY

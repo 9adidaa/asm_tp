@@ -1,0 +1,1 @@
+"""Module serveur du RAT."""

@@ -1,0 +1,1 @@
+"""Module partagé entre le client et le serveur."""
